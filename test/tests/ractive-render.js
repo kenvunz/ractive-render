@@ -33,7 +33,7 @@ describe('compile', function () {
 		ractiveRender.compile(app.get('views')).spread(function (load, rvc, template) {
 			expect(load.length).to.equal(9);
 			expect(rvc.length).to.equal(10);
-			expect(template.length).to.equal(9);
+			expect(template.length).to.equal(10);
 
 			done();
 		});

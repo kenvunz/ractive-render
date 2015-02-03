@@ -162,6 +162,78 @@ describe('template', function () {
 					});
 				});
 			});
+
+            describe('autoload on with custom partial path', function () {
+                before(function () {
+                    ractiveRender.config({ autoloadPartials: true, partialPath: 'partials' });
+                });
+
+                it('should render a partial defined as a string', function (done) {
+                    app.render('template/template-partial.html', { data: { name: 'Word' }, partials: { partial: 'Hi!' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>Hi!');
+                        done();
+                    });
+                });
+
+                it('should render a partial defined as an object', function (done) {
+                    app.render('template/template-partial.html', { data: { name: 'Word' }, partials: { partial: [ 'Hi!' ] } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>Hi!');
+                        done();
+                    });
+                });
+
+                it('should render a partial defined as a file', function (done) {
+                    app.render('template/template-partial.html', { data: { name: 'Word' }, partials: { partial: 'partial!template/partial' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>Hi there!');
+                        done();
+                    });
+                });
+
+                it('should autoload the partial', function (done) {
+                    app.render('template/template-partial.html', { data: { name: 'Word' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>Hi there!');
+                        done();
+                    });
+                });
+
+                it('should autoload the partial rendered inside another element', function (done) {
+                    app.render('template/template-partial-nested.html', { data: { name: 'Word' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p><p>Hi there!</p>');
+                        done();
+                    });
+                });
+
+                it('should not fail if partial doesn\'t exist', function (done) {
+                    app.render('template/template-no-partial.html', { data: { name: 'Word' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>');
+                        done();
+                    });
+                });
+            });
 		});
 
 		describe('components', function () {
@@ -371,6 +443,51 @@ describe('template', function () {
 					});
 				});
 			});
+
+            describe('autoload on with custom partial path', function () {
+                before(function () {
+                    ractiveRender.config({ autoloadPartials: true, partialPath: 'partials' });
+                });
+
+                it('should autoload the partial', function (done) {
+                    ractiveRender.clearCache();
+                    app.render('template/template-partial.html', { data: { name: 'Word' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>Hi there!');
+                        done();
+                    });
+                });
+
+                it('should allow an autoloaded partial to be overridden', function (done) {
+                    app.render('template/template-partial.html', { data: { name: 'Word' }, partials: { partial: 'Hi!' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>Hi!');
+                        done();
+                    });
+                });
+
+                it('should not autoload the partial', function (done) {
+                    ractiveRender.clearCache();
+                    app.render('template/template-partial.html', { data: { name: 'Word' }, partials: { partial: 'Hi!' } }, function (err, html) {
+                        if (err) {
+                            done(err);
+                        }
+
+                        expect(html).to.equal('<p>Hello Word!</p>Hi!');
+
+                        app.render('template/template-partial.html', { data: { name: 'Word' } }, function (err, html) {
+                            expect(html).to.equal('<p>Hello Word!</p>Hi!');
+                            done();
+                        });
+                    });
+                });
+            });
 		});
 
 		describe('components', function () {

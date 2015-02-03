@@ -10,7 +10,7 @@ app.engine('html', ractiveRender.renderFile);
 
 describe('load', function () {
 	before(function () {
-		ractiveRender.use('load').config({ componentsLoader: 'load', defaultLoader: 'load' });
+		ractiveRender.use('load').config({ componentsLoader: 'load', defaultLoader: 'load', partialPath: null });
 	});
 
 	describe('no cache', function () {
